@@ -1,0 +1,24 @@
+import pandas as pd
+from sklearn import svm
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
+import joblib
+
+# Chargez votre fichier CSV avec les données d'entraînement
+file_path = 'app/features_3_sec.csv'
+df = pd.read_csv(file_path)
+
+# Préparez vos données d'entraînement (X_train, y_train)
+# Assurez-vous d'adapter cette partie à la structure réelle de vos données
+X_train = df.iloc[:, 2:-1].values  # Exemple : sélectionnez les colonnes pertinentes
+y_train = df['label'].values  # Assurez-vous d'ajuster le nom de la colonne de l'étiquette
+
+# Créez un modèle SVM avec une pipeline (prétraitement + SVM)
+model = make_pipeline(StandardScaler(), svm.SVC(kernel='linear'))
+
+# Entraînez le modèle sur les données d'entraînement
+model.fit(X_train, y_train)
+
+# Sauvegardez le modèle
+joblib.dump(model, 'app/svm_model.pkl')

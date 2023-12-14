@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='pred.css') }}">
+    
+</head>
+<body>
+
+<div class="container">
+
+    <header>
+        <h2><a href="#"><i class="ion-plane"></i> Music </a></h2>
+        <nav>
+            <ul>
+                <li>
+                    <a href="#" title="Hotels">Blues</a>
+                </li>
+                <li>
+                    <a href="#" title="Flights">Classical</a>
+                </li>
+                <li>
+                    <a href="#" title="Tours">Disco</a>
+                </li>
+                <li>
+                    <a class="btn" href="#" title="Register / Log In">Register/Log In</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="cover">
+        <h1>Predict the music's genre</h1>
+        <form class="flex-form" onsubmit="classifyGenre(); return false;">
+            <label for="from">
+                <i class="ion-location"></i>
+            </label>
+            <input type="file" id="audioFile" name="audio_file" accept=".wav, .mp3">
+             
+            <input type="submit" value="Upload Audio">
+        </form>
+    <div></div>
+<div></div>
+<div></div>
+        <h1 id="result"></h1>
+    </div>
+
+</div>
+
+<script>
+    function classifyGenre() {
+        const audioFile = document.getElementById('audioFile').files[0];
+
+        if (audioFile) {
+            const formData = new FormData();
+            formData.append('audio_file', audioFile);
+
+            fetch('/svm_service', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = 'Predicted Genre: ' + data.genre_prediction;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('result').innerText = 'Error occurred during classification.';
+            });
+        } else {
+            alert('Please select an audio file.');
+        }
+    }
+</script>
+
+</body>
+</html>
